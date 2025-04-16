@@ -1,0 +1,70 @@
+
+GET http://localhost:8080/
+
+
+####
+
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+    "username":"test1",
+    "email":"testemail1@gmail.com",
+    "password": "987654321"
+}
+
+#####
+
+POST  http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "testemail1@gmail.com",
+    "password": "987654321"
+}
+
+####
+POST http://localhost:8080/api/whatsapp/start-session
+Content-Type: application/json
+
+{
+    "userId": "67f3e3c33c630930dc11be3b"
+}
+
+####
+POST http://localhost:8080/api/whatsapp/end-session
+Content-Type: application/json
+
+{
+    "userId": "67f3e3c33c630930dc11be3b"
+}
+
+####
+GET http://localhost:8080/api/whatsapp/session-status/67f3e3c33c630930dc11be3b
+
+####
+POST http://localhost:8080/api/whatsapp/send-message
+Content-Type: application/json
+
+{
+    "userId":"67f3e3c33c630930dc11be3b",
+    "phone":"254799590711",
+    "message":"Test for whatsapi today 8th"
+}
+
+####
+POST http://localhost:8080/api/whatsapp/send-bulk-messages
+Content-Type: application/json
+
+{
+    "userId":"67f3e3c33c630930dc11be3b",
+    "phone":["254707160166","254759065929", "254799590711", "254799223873"],
+    "message":"Test for whatsapi array bulk today 7th April second attempt"
+}
+
+####
+
+GET http://localhost:8080/api/whatsapp/messages/67f3e3c33c630930dc11be3b
+
+###
+GET http://localhost:8080/api/whatsapp/session/status/67f3e3c33c630930dc11be3b
