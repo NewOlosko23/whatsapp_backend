@@ -36,13 +36,13 @@ const createSession = async (userId) => {
     client.on("ready", async () => {
       const user = await User.findById(userId);
       console.log(
-        `✅ WhatsApp session connected: Client for ${
+        `WhatsApp session connected: Client for ${
           user?.username || userId
         } is ready.`
       );
 
       await User.findByIdAndUpdate(userId, {
-        instanceStatus: "active",
+        instanceStatus: "connected",
         instanceId: userId,
       });
 
@@ -74,7 +74,7 @@ const createSession = async (userId) => {
       const user = await User.findById(userId);
       console.log(`❌ Client for ${user?.username || userId} disconnected`);
       await User.findByIdAndUpdate(userId, {
-        instanceStatus: "inactive",
+        instanceStatus: "disconnected",
         instanceId: null,
       });
       clientMap.delete(userId);
@@ -98,7 +98,7 @@ const endSession = async (userId) => {
     await client.destroy();
     clientMap.delete(userId);
     await User.findByIdAndUpdate(userId, {
-      instanceStatus: "inactive",
+      instanceStatus: "disconnected",
       instanceId: null,
     });
     console.log(`🛑 Session ended for ${user?.username || userId}`);
@@ -133,7 +133,7 @@ const restoreSession = async (userId) => {
     const user = await User.findById(userId);
     console.log(`✅ Session manually restored for ${user?.username || userId}`);
     await User.findByIdAndUpdate(userId, {
-      instanceStatus: "active",
+      instanceStatus: "connected",
       instanceId: userId,
     });
   });
@@ -148,7 +148,7 @@ const restoreSession = async (userId) => {
     const user = await User.findById(userId);
     console.log(`❌ Client for ${user?.username || userId} disconnected`);
     await User.findByIdAndUpdate(userId, {
-      instanceStatus: "inactive",
+      instanceStatus: "disconnected",
       instanceId: null,
     });
     clientMap.delete(userId);
