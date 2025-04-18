@@ -1,84 +1,77 @@
+import admin from "../firebaseAdmin.js";
 import User from "../models/userModel.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { token, email, username, uid } = req.body;
 
   try {
-    let user = await User.findOne({ email });
+    const decoded = await admin.auth().verifyIdToken(token);
 
-    if (user) {
-      return res.status(400).json({
-        success: false,
-        message: "User with this email already exists.",
-      });
+    if (decoded.uid !== uid) {
+      return res.status(401).json({ success: false, message: "Invalid token" });
     }
 
-    user = new User({
-      username,
-      email,
-      password,
-    });
+    let user = await User.findOne({ uid });
 
-    await user.save();
+    if (!user) {
+      user = new User({
+        uid,
+        email,
+        username,
+      });
+      await user.save();
+    }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
-      message: "User registered successfully",
-      token,
       user,
     });
-  } catch (error) {
-    console.error("Error registering user:", error);
-    return res.status(500).json({
-      success: false,
-      message: "An error occurred while registering the user.",
-    });
+  } catch (err) {
+    console.error("Register error:", err.message);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { token } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const decoded = await admin.auth().verifyIdToken(token);
+    const user = await User.findOne({ uid: decoded.uid });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid password",
-      });
-    }
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      message: "Logged in successfully",
-      token,
       user,
     });
-  } catch (error) {
-    console.error("Error logging in user:", error);
-    return res.status(500).json({
-      success: false,
-      message: "An error occurred while logging in.",
-    });
+  } catch (err) {
+    console.error("Login error:", err.message);
+    res.status(500).json({ success: false, message: "Login failed" });
   }
 };
 
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const link = await admin.auth().generatePasswordResetLink(email, {
+      url: "http://localhost:5173/login",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Reset link generated",
+      resetLink: link,
+    });
+  } catch (err) {
+    console.error("Forgot password error:", err.message);
+    res
+      .status(500)
+      .json({ success: false, message: "Could not send reset email" });
+  }
+};
