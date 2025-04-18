@@ -1,21 +1,19 @@
-import admin from "../firebaseAdmin.js";
 import User from "../models/userModel.js";
 
 export const registerUser = async (req, res) => {
-  const { uid, email, username } = req.body;
+  const { email, username } = req.body;
 
-  if (!uid || !email || !username) {
+  if (!email || !username) {
     return res
       .status(400)
       .json({ success: false, message: "Missing required fields" });
   }
 
   try {
-    let user = await User.findOne({ uid });
+    let user = await User.findOne({ email });
 
     if (!user) {
       user = new User({
-        uid,
         email,
         username,
       });
@@ -32,15 +30,16 @@ export const registerUser = async (req, res) => {
   }
 };
 
+// Login User
 export const loginUser = async (req, res) => {
-  const { uid } = req.body;
+  const { email } = req.body;
 
-  if (!uid) {
-    return res.status(400).json({ success: false, message: "Missing UID" });
+  if (!email) {
+    return res.status(400).json({ success: false, message: "Missing email" });
   }
 
   try {
-    const user = await User.findOne({ uid });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res
@@ -57,4 +56,3 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Login failed" });
   }
 };
-
