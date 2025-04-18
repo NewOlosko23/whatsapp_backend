@@ -2,15 +2,15 @@ import admin from "../firebaseAdmin.js";
 import User from "../models/userModel.js";
 
 export const registerUser = async (req, res) => {
-  const { token, email, username, uid } = req.body;
+  const { uid, email, username } = req.body;
+
+  if (!uid || !email || !username) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing required fields" });
+  }
 
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
-
-    if (decoded.uid !== uid) {
-      return res.status(401).json({ success: false, message: "Invalid token" });
-    }
-
     let user = await User.findOne({ uid });
 
     if (!user) {
@@ -33,11 +33,14 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-  const { token } = req.body;
+  const { uid } = req.body;
+
+  if (!uid) {
+    return res.status(400).json({ success: false, message: "Missing UID" });
+  }
 
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
-    const user = await User.findOne({ uid: decoded.uid });
+    const user = await User.findOne({ uid });
 
     if (!user) {
       return res
@@ -55,23 +58,3 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const forgotPassword = async (req, res) => {
-  const { email } = req.body;
-
-  try {
-    const link = await admin.auth().generatePasswordResetLink(email, {
-      url: "http://localhost:5173/login",
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Reset link generated",
-      resetLink: link,
-    });
-  } catch (err) {
-    console.error("Forgot password error:", err.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Could not send reset email" });
-  }
-};
