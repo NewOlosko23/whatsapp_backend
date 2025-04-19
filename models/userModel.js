@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
     },
     instanceStatus: {
       type: String,
-      default: "inactive",
+      default: "disconnected",
     },
   },
   { timestamps: true }
