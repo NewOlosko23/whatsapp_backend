@@ -1,18 +1,17 @@
 
-GET http://localhost:3000/
+GET http://localhost:8080/
 
+###
+GET https://whatsapp-backend-a11b.onrender.com/
 
 ####
 
-GET http://127.0.0.1:3000/
- ###
-
-POST http://localhost:3000/api/auth/register
+POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-    "username":"max",
-    "email":"max@gmail.com",
+    "username":"olosko",
+    "email":"olosko@gmail.com",
     "password": "987654321"
 }
 
@@ -22,7 +21,7 @@ POST  http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "testemail1@gmail.com",
+    "email": "olosko@gmail.com",
     "password": "987654321"
 }
 
@@ -31,7 +30,7 @@ POST http://localhost:8080/api/whatsapp/start-session
 Content-Type: application/json
 
 {
-    "userId": "67f3e3c33c630930dc11be3b"
+    "userId": "680f4847a9e1614033b828e5"
 }
 
 ####
@@ -43,14 +42,14 @@ Content-Type: application/json
 }
 
 ####
-GET http://localhost:8080/api/whatsapp/session-status/67f3e3c33c630930dc11be3b
+GET https://whatsapp-backend-a11b.onrender.com/api/whatsapp/session-status/680f4847a9e1614033b828e5
 
 ####
 POST http://localhost:8080/api/whatsapp/send-message
 Content-Type: application/json
 
 {
-    "userId":"67f3e3c33c630930dc11be3b",
+    "userId":"680f4847a9e1614033b828e5",
     "phone":"254799590711",
     "message":"Test for whatsapi today 8th"
 }
@@ -60,14 +59,16 @@ POST http://localhost:8080/api/whatsapp/send-bulk-messages
 Content-Type: application/json
 
 {
-    "userId":"67f3e3c33c630930dc11be3b",
+    "userId":"680f4847a9e1614033b828e5",
     "phone":["254707160166","254759065929", "254799590711", "254799223873"],
-    "message":"Test for whatsapi array bulk today 7th April second attempt"
+    "message":"Test for whatsapi array bulk today 28th April second attempt"
 }
 
 ####
 
-GET http://localhost:8080/api/whatsapp/messages/67f3e3c33c630930dc11be3b
+GET http://localhost:8080/api/whatsapp/messages/680f4847a9e1614033b828e5
 
 ###
-GET http://localhost:8080/api/whatsapp/session/status/67f3e3c33c630930dc11be3b
+GET http://localhost:8080/api/whatsapp/session/status/680f4847a9e1614033b828e5
+
+###

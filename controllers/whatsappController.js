@@ -69,10 +69,10 @@ const sendSingleMessage = async (req, res) => {
     }
 
     // Check if session is active
-    if (user.instanceStatus !== "connected") {
+    if (user.instanceStatus !== "active") {
       return res
         .status(400)
-        .json({ success: false, message: "User instance is not connected" });
+        .json({ success: false, message: "User instance is not active" });
     }
 
     // Proceed to send message
@@ -100,10 +100,10 @@ const sendBulkMessages = async (req, res) => {
     }
 
     // Check if session is active
-    if (user.instanceStatus !== "connected") {
+    if (user.instanceStatus !== "active") {
       return res
         .status(400)
-        .json({ success: false, message: "User instance is not connected" });
+        .json({ success: false, message: "User instance is not active" });
     }
 
     // Validate phone list
@@ -135,7 +135,7 @@ const checkSessionStatus = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    const status = user.instanceStatus || "disconnected";
+    const status = user.instanceStatus || "inactive";
 
     res.status(200).json({
       success: true,

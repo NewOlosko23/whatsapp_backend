@@ -9,8 +9,8 @@ const isValidPhoneNumber = (number) => {
 // Send single message
 const sendMessage = async (userId, phone, message) => {
   const user = await User.findById(userId);
-  if (!user || user.instanceStatus !== "connected") {
-    throw new Error("User instance is not connected");
+  if (!user || user.instanceStatus !== "active") {
+    throw new Error("User instance is not active");
   }
 
   if (!isValidPhoneNumber(phone)) {
@@ -39,8 +39,8 @@ const sendMessage = async (userId, phone, message) => {
 // Send messages to multiple numbers
 const sendBulkMessages = async (userId, phones, message) => {
   const user = await User.findById(userId);
-  if (!user || user.instanceStatus !== "connected") {
-    throw new Error("User instance is not connected");
+  if (!user || user.instanceStatus !== "active") {
+    throw new Error("User instance is not active");
   }
 
   if (!Array.isArray(phones) || phones.length === 0) {
